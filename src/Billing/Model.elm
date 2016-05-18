@@ -1,4 +1,4 @@
-module Billing.Packet where
+module Billing.Model where
 
 {-| Packet
 -}
@@ -13,14 +13,26 @@ type alias Packet =
   , services : List Service
   }
 
-type alias PacketType = { alias: String, name: String }
+type alias PacketType =
+  { alias: String
+  , name: String
+  }
 
-type alias Project = {id: Int, alias: String, name: String}
+type alias Project =
+  { id: Int
+  , alias: String
+  , name: String
+  }
 
-type ClientType = User | Advert | Company
+type ClientType
+  = User
+  | Advert
+  | Company
 
-type alias Region = { id: Int, name: String }
-
+type alias Region =
+  { id: Int
+  , name: String
+  }
 
 type alias Period = { unit: PeriodUnit, value: PeriodValue }
 

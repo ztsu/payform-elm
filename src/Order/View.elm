@@ -1,10 +1,10 @@
 module Order.View where
 
-import Billing.Packet as Packet
+import Billing.Model
 import Html exposing (Html, div, text, span, select, option, input, ul, li, label)
 import Html.Attributes exposing (type', name)
 
-packet : Packet.Packet -> Html
+packet : Billing.Model.Packet -> Html
 packet packet =
   div []
     [ div []
@@ -17,39 +17,40 @@ packet packet =
       , services packet.services
     ]
 
-region : Packet.Region -> Html
+region : Billing.Model.Region -> Html
 region region =
   div [] [ text <| "Регион: " ++ region.name ]
 
-period : Packet.Period -> Html
+period : Billing.Model.Period -> Html
 period period =
   div [] [ text "Период: ", periodValue period.value, periodUnit period.unit ]
 
-periodValue : Packet.PeriodValue -> Html
+periodValue : Billing.Model.PeriodValue -> Html
 periodValue value =
   case value of
-    Packet.PeriodRange range -> div [] [text ("range" ++ "test")]
-    Packet.PeriodList list -> select [] (List.map (\n -> option [] [text <| toString n]) list)
+    Billing.Model.PeriodRange range -> div [] [text ("range" ++ "test")]
+    Billing.Model.PeriodList list -> select [] (List.map (\n -> option [] [text <| toString n]) list)
 
-periodUnit : Packet.PeriodUnit -> Html
+periodUnit : Billing.Model.PeriodUnit -> Html
 periodUnit unit =
   case unit of
-    Packet.Hour -> text "час"
-    Packet.Day -> text "день"
-    Packet.Month -> text "месяц"
+    Billing.Model.Hour -> text "час"
+    Billing.Model.Day -> text "день"
+    Billing.Model.Month -> text "месяц"
 
-services : List Packet.Service -> Html
+services : List Billing.Model.Service -> Html
 services services =
   ul [] (List.map service services)
 
 
-service : Packet.Service -> Html
+service : Billing.Model.Service -> Html
 service service =
   li [] [ text service.alias ]
 
+
+{-|-}
 beginDate : Html
 beginDate =
-
   div []
   [ label []
       [ input [ type' "radio", name "1"] []
