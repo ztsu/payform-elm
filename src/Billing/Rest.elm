@@ -1,4 +1,4 @@
-module Billing.Rest where
+module Billing.Rest exposing (..)
 
 import Json.Decode exposing ((:=))
 

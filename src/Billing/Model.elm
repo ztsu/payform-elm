@@ -1,4 +1,4 @@
-module Billing.Model where
+module Billing.Model exposing (..)
 
 {-| Packet
 -}
