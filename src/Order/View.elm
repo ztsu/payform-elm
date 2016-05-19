@@ -1,9 +1,10 @@
 module Order.View exposing (packet)
 
 import Billing.Model
-import Html exposing (div, text, span, select, option, input, ul, li, label)
+import Html exposing (Html, div, text, span, select, option, input, ul, li, label)
 import Html.Attributes exposing (type', name)
 
+packet : Billing.Model.Packet -> Html ()
 packet packet =
   div []
     [ div []
@@ -16,17 +17,22 @@ packet packet =
       , services packet.services
     ]
 
+region : Billing.Model.Region -> Html ()
 region region =
   div [] [ text <| "Регион: " ++ region.name ]
 
+period : Billing.Model.Period -> Html ()
 period period =
   div [] [ text "Период: ", periodValue period.value, periodUnit period.unit ]
 
+
+periodValue : Billing.Model.PeriodValue -> Html ()
 periodValue value =
   case value of
     Billing.Model.PeriodRange range -> div [] [text ("range" ++ "test")]
     Billing.Model.PeriodList list -> select [] (List.map (\n -> option [] [text <| toString n]) list)
 
+periodUnit : Billing.Model.PeriodUnit -> Html ()
 periodUnit unit =
   case unit of
     Billing.Model.Hour -> text "час"
@@ -42,6 +48,7 @@ service service =
 
 
 {-|-}
+beginDate : Html ()
 beginDate =
   div []
   [ label []
