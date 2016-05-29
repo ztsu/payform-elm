@@ -39,6 +39,8 @@ decodeClient =
   Json.Decode.string `Json.Decode.andThen` \client ->
     case client of
       "user" -> Json.Decode.succeed Billing.Model.User
+      "advert" -> Json.Decode.succeed Billing.Model.Advert
+      "company" -> Json.Decode.succeed Billing.Model.Company
       _ -> Json.Decode.fail "client doesnt't recognized"
 
 

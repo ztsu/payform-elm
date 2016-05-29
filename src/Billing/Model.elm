@@ -13,10 +13,12 @@ type alias Packet =
   , services : List Service
   }
 
+
 type alias PacketType =
   { alias: String
   , name: String
   }
+
 
 type alias Project =
   { id: Int
@@ -24,21 +26,31 @@ type alias Project =
   , name: String
   }
 
+
 type ClientType
   = User
   | Advert
   | Company
+
 
 type alias Region =
   { id: Int
   , name: String
   }
 
+
 type alias Period = { unit: PeriodUnit, value: PeriodValue }
 
-type PeriodUnit = Hour | Day | Month
 
-type PeriodValue = PeriodRange {min : Int, max: Int, step: Int} | PeriodList (List Int)
+type PeriodUnit
+  = Hour
+  | Day
+  | Month
+
+
+type PeriodValue
+  = PeriodRange {min : Int, max: Int, step: Int}
+  | PeriodList (List Int)
 
 
 type alias Service =
@@ -51,6 +63,7 @@ type alias Service =
 
 
 type ServiceUnit = Cm | M
+
 
 type ServiceValue
   = ServiceInt { min : Int, max : Int, default : Int }
