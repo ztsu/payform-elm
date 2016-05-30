@@ -49,6 +49,24 @@ decodeClient =
       _ -> Json.Decode.fail "client doesnt't recognized"
 
 
+decodePeriod : Json.Decode.Decoder Billing.Model.Period
+decodePeriod =
+  let
+    unit =
+      ("unit" := decodePeriodUnit)
+
+    value =
+      Json.Decode.oneOf
+        [ ("range" := decodePeriodValueRange)
+        , ("list" := decodePeriodValueList)
+        ]
+  in
+    Json.Decode.oneOf
+      [ (Json.Decode.object2 Billing.Model.Period unit value)
+      , (Json.Decode.succeed <| Billing.Model.OneTime)
+      ]
+
+
 decodePeriodUnit : Json.Decode.Decoder Billing.Model.PeriodUnit
 decodePeriodUnit =
   Json.Decode.string `Json.Decode.andThen` \unit ->
@@ -69,21 +87,6 @@ decodePeriodValueRange =
 decodePeriodValueList : Json.Decode.Decoder Billing.Model.PeriodValue
 decodePeriodValueList =
   Json.Decode.succeed <| Billing.Model.PeriodList [1,2,3,4]
-
-
-decodePeriodValue =
-  Json.Decode.oneOf
-    [ ("range" := decodePeriodValueRange)
-    , ("list" := decodePeriodValueList)
-    ]
-
-
-decodePeriod : Json.Decode.Decoder Billing.Model.Period
-decodePeriod =
-  Json.Decode.oneOf
-    [ (Json.Decode.object2 Billing.Model.Period ("unit" := decodePeriodUnit) decodePeriodValue)
-    , (Json.Decode.succeed <| Billing.Model.OneTime)
-    ]
 
 
 {- @todo -}
