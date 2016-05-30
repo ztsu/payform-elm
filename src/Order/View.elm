@@ -10,7 +10,8 @@ import Order.Model exposing (Model)
 view : Model -> Html Order.Model.Msg
 view model =
   div []
-  [ div [] (List.map packet model.packets)
+  [ div [] [ text <| "Тарифы (" ++ (toString <| List.length model.packets) ++ "):"]
+  , div [] (List.map packet model.packets)
   , div [] (List.map text model.errors)
   ]
 
@@ -28,13 +29,19 @@ packet packet =
       , services packet.services
     ]
 
+
 region : Billing.Model.Region -> Html Order.Model.Msg
 region region =
   div [] [ text <| "Регион: " ++ region.name ]
 
+
 period : Billing.Model.Period -> Html Order.Model.Msg
-period period =
-  div [] [ text "Период: ", periodValue period.value, periodUnit period.unit ]
+period period = case period of
+  Billing.Model.OneTime ->
+    div [] [ text "Одноразово" ]
+
+  Billing.Model.JustPeriod unit value ->
+    div [] [ text "Период: ", periodValue value, periodUnit unit ]
 
 
 periodValue : Billing.Model.PeriodValue -> Html Order.Model.Msg
@@ -49,6 +56,7 @@ periodUnit unit =
     Billing.Model.Hour -> text "час"
     Billing.Model.Day -> text "день"
     Billing.Model.Month -> text "месяц"
+
 
 services services =
   ul [] (List.map service services)

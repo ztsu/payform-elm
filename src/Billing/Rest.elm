@@ -38,9 +38,14 @@ decodeClient : Json.Decode.Decoder Billing.Model.ClientType
 decodeClient =
   Json.Decode.string `Json.Decode.andThen` \client ->
     case client of
-      "user" -> Json.Decode.succeed Billing.Model.User
       "advert" -> Json.Decode.succeed Billing.Model.Advert
       "company" -> Json.Decode.succeed Billing.Model.Company
+      "gift" -> Json.Decode.succeed Billing.Model.Gift
+      "profile" -> Json.Decode.succeed Billing.Model.Profile
+      "resume" -> Json.Decode.succeed Billing.Model.Resume
+      "user" -> Json.Decode.succeed Billing.Model.User
+      "vacancy" -> Json.Decode.succeed Billing.Model.Vacancy
+      "wallet" -> Json.Decode.succeed Billing.Model.Wallet
       _ -> Json.Decode.fail "client doesnt't recognized"
 
 
@@ -53,24 +58,52 @@ decodePeriodUnit =
       "month" -> Json.Decode.succeed Billing.Model.Month
       _ -> Json.Decode.fail "period unit doesn't recognize"
 
+
+{- @todo -}
 decodePeriodValueRange : Json.Decode.Decoder Billing.Model.PeriodValue
 decodePeriodValueRange =
+  Json.Decode.succeed <| Billing.Model.PeriodRange { min = 1, max = 10, step = 1 }
+
+
+{- @todo -}
+decodePeriodValueList : Json.Decode.Decoder Billing.Model.PeriodValue
+decodePeriodValueList =
   Json.Decode.succeed <| Billing.Model.PeriodList [1,2,3,4]
+
+
+decodePeriodValue =
+  Json.Decode.oneOf
+    [ ("range" := decodePeriodValueRange)
+    , ("list" := decodePeriodValueList)
+    ]
+
+
+decodeJustPeriod =
+  Json.Decode.object2 Billing.Model.JustPeriod
+    ("unit" := decodePeriodUnit)
+    (decodePeriodValue)
+
 
 
 decodePeriod : Json.Decode.Decoder Billing.Model.Period
 decodePeriod =
-  Json.Decode.object2 Billing.Model.Period
-    ("unit" := decodePeriodUnit)
-    (Json.Decode.oneOf [ ("range" := decodePeriodValueRange) ])
+  Json.Decode.oneOf
+    [ (decodeJustPeriod)
+    , (Json.Decode.succeed <| Billing.Model.OneTime)
+    ]
 
+
+{- @todo -}
 decodeServiceUnit : Json.Decode.Decoder Billing.Model.ServiceUnit
 decodeServiceUnit =
   Json.Decode.succeed Billing.Model.M
 
+
+{- @todo -}
 decodeServiceValue : Json.Decode.Decoder Billing.Model.ServiceValue
 decodeServiceValue =
   Json.Decode.succeed <| Billing.Model.ServiceList {values = [1,2,3], default = 1}
+
 
 decodeService : Json.Decode.Decoder Billing.Model.Service
 decodeService =
@@ -80,6 +113,7 @@ decodeService =
     ("visible" := Json.Decode.bool)
     ("unit" := Json.Decode.maybe decodeServiceUnit)
     (decodeServiceValue)
+
 
 decodePacket : Json.Decode.Decoder Billing.Model.Packet
 decodePacket =

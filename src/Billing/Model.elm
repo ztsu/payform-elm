@@ -28,9 +28,15 @@ type alias Project =
 
 
 type ClientType
-  = User
-  | Advert
+  = Advert
   | Company
+  | Gift
+  | Profile
+  | Resume
+  | User
+  | Vacancy
+  | Wallet
+
 
 
 type alias Region =
@@ -39,7 +45,9 @@ type alias Region =
   }
 
 
-type alias Period = { unit: PeriodUnit, value: PeriodValue }
+type Period
+  = JustPeriod PeriodUnit PeriodValue
+  | OneTime
 
 
 type PeriodUnit

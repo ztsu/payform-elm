@@ -10,9 +10,8 @@ import Http
 
 
 type Msg
-  = More
+  = FetchSucceed (List Billing.Model.Packet)
   | FetchFail Http.Error
-  | FetchSucceed (List Billing.Model.Packet)
 
 
 type alias Model =
@@ -32,18 +31,17 @@ update msg model =
     caseError error =
       case error of
         Http.UnexpectedPayload str -> str
-        _ -> "Other"
+        _ -> "Другая ошибка"
 
   in
     case msg of
-      More ->
-        (model, getPackets)
 
       FetchFail error ->
         ({ model | errors = List.append model.errors [caseError error] }, Cmd.none)
 
-      _ ->
-        (model, Cmd.none)
+      FetchSucceed packets ->
+        ({ model | packets = packets}, Cmd.none)
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
