@@ -70,7 +70,9 @@ type alias Service =
   }
 
 
-type ServiceUnit = Cm | M
+type ServiceUnit
+  = NoUnit
+  | Meter
 
 
 type ServiceValue

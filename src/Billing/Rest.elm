@@ -89,10 +89,12 @@ decodePeriodValueList =
   Json.Decode.succeed <| Billing.Model.PeriodList [1,2,3,4]
 
 
-{- @todo -}
 decodeServiceUnit : Json.Decode.Decoder Billing.Model.ServiceUnit
 decodeServiceUnit =
-  Json.Decode.succeed Billing.Model.M
+  Json.Decode.string `Json.Decode.andThen` \unit ->
+    case unit of
+      "meter" -> Json.Decode.succeed Billing.Model.Meter
+      _ -> Json.Decode.succeed Billing.Model.NoUnit
 
 
 {- @todo -}
