@@ -78,17 +78,10 @@ decodePeriodValue =
     ]
 
 
-decodeJustPeriod =
-  Json.Decode.object2 Billing.Model.JustPeriod
-    ("unit" := decodePeriodUnit)
-    (decodePeriodValue)
-
-
-
 decodePeriod : Json.Decode.Decoder Billing.Model.Period
 decodePeriod =
   Json.Decode.oneOf
-    [ (decodeJustPeriod)
+    [ (Json.Decode.object2 Billing.Model.Period ("unit" := decodePeriodUnit) decodePeriodValue)
     , (Json.Decode.succeed <| Billing.Model.OneTime)
     ]
 

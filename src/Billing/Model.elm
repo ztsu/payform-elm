@@ -46,7 +46,7 @@ type alias Region =
 
 
 type Period
-  = JustPeriod PeriodUnit PeriodValue
+  = Period PeriodUnit PeriodValue
   | OneTime
 
 

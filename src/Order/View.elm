@@ -40,7 +40,7 @@ period period = case period of
   Billing.Model.OneTime ->
     div [] [ text "Одноразово" ]
 
-  Billing.Model.JustPeriod unit value ->
+  Billing.Model.Period unit value ->
     div [] [ text "Период: ", periodValue value, periodUnit unit ]
 
 
