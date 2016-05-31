@@ -1,4 +1,4 @@
-module Order.Model exposing (..)
+module Order.Model exposing (Model, Msg, init, update, subscriptions)
 
 import Json.Decode
 
