@@ -47,7 +47,7 @@ period period = case period of
 periodValue : Billing.Model.PeriodValue -> Html Order.Model.Msg
 periodValue value =
   case value of
-    Billing.Model.PeriodRange range -> div [] [text ("range" ++ "test")]
+    Billing.Model.PeriodRange range -> div [] [text (toString range.min ++ " - " ++ toString range.max ++ ", " ++ toString range.step)]
     Billing.Model.PeriodList list -> select [] (List.map (\n -> option [] [text <| toString n]) list)
 
 periodUnit : Billing.Model.PeriodUnit -> Html Order.Model.Msg

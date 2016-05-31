@@ -57,9 +57,19 @@ decodePeriod =
 
     value =
       Json.Decode.oneOf
-        [ ("range" := decodePeriodValueRange)
-        , ("list" := decodePeriodValueList)
+        [ ("range" := range)
+        , ("list" := list)
         ]
+
+    range =
+      Json.Decode.object3
+        (\min max step -> Billing.Model.PeriodRange { min = min, max = max, step = step })
+        ("min" := Json.Decode.int)
+        ("max" := Json.Decode.int)
+        ("step" := Json.Decode.int)
+
+    list =
+      Json.Decode.object1 Billing.Model.PeriodList (Json.Decode.list Json.Decode.int)
   in
     Json.Decode.oneOf
       [ (Json.Decode.object2 Billing.Model.Period unit value)
@@ -75,18 +85,6 @@ decodePeriodUnit =
       "day" -> Json.Decode.succeed Billing.Model.Day
       "month" -> Json.Decode.succeed Billing.Model.Month
       _ -> Json.Decode.fail "period unit doesn't recognize"
-
-
-{- @todo -}
-decodePeriodValueRange : Json.Decode.Decoder Billing.Model.PeriodValue
-decodePeriodValueRange =
-  Json.Decode.succeed <| Billing.Model.PeriodRange { min = 1, max = 10, step = 1 }
-
-
-{- @todo -}
-decodePeriodValueList : Json.Decode.Decoder Billing.Model.PeriodValue
-decodePeriodValueList =
-  Json.Decode.succeed <| Billing.Model.PeriodList [1,2,3,4]
 
 
 decodeServiceUnit : Json.Decode.Decoder Billing.Model.ServiceUnit
