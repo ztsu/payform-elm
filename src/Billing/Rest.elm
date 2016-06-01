@@ -12,6 +12,19 @@ import Billing.Model
 
 -- Decoders
 
+decodePacket : Json.Decode.Decoder Billing.Model.Packet
+decodePacket =
+  Json.Decode.map Billing.Model.Packet
+    ("id" := Json.Decode.int)
+    &= ("name" := Json.Decode.string)
+    &= ("type" := decodePacketType)
+    &= ("project" := decodeProject)
+    &= ("client_type" := decodeClient)
+    &= ("region" := decodeRegion)
+    &= ("period" := decodePeriod)
+    &= ("services" := Json.Decode.list decodeService)
+
+
 decodePacketType : Json.Decode.Decoder Billing.Model.PacketType
 decodePacketType =
   Json.Decode.object2 Billing.Model.PacketType
@@ -26,14 +39,6 @@ decodeProject =
     ("alias" := Json.Decode.string)
     ("name" := Json.Decode.string)
 
-
-decodeRegion : Json.Decode.Decoder Billing.Model.Region
-decodeRegion =
-  Json.Decode.object2 Billing.Model.Region
-    ("id" := Json.Decode.int)
-    ("name" := Json.Decode.string)
-
-
 decodeClient : Json.Decode.Decoder Billing.Model.ClientType
 decodeClient =
   Json.Decode.string `Json.Decode.andThen` \client ->
@@ -47,6 +52,13 @@ decodeClient =
       "vacancy" -> Json.Decode.succeed Billing.Model.Vacancy
       "wallet" -> Json.Decode.succeed Billing.Model.Wallet
       _ -> Json.Decode.fail "client doesnt't recognized"
+
+
+decodeRegion : Json.Decode.Decoder Billing.Model.Region
+decodeRegion =
+  Json.Decode.object2 Billing.Model.Region
+    ("id" := Json.Decode.int)
+    ("name" := Json.Decode.string)
 
 
 decodePeriod : Json.Decode.Decoder Billing.Model.Period
@@ -87,20 +99,6 @@ decodePeriodUnit =
       _ -> Json.Decode.fail "period unit doesn't recognize"
 
 
-decodeServiceUnit : Json.Decode.Decoder Billing.Model.ServiceUnit
-decodeServiceUnit =
-  Json.Decode.string `Json.Decode.andThen` \unit ->
-    case unit of
-      "meter" -> Json.Decode.succeed Billing.Model.Meter
-      _ -> Json.Decode.succeed Billing.Model.NoUnit
-
-
-{- @todo -}
-decodeServiceValue : Json.Decode.Decoder Billing.Model.ServiceValue
-decodeServiceValue =
-  Json.Decode.succeed <| Billing.Model.ServiceList {values = [1,2,3], default = 1}
-
-
 decodeService : Json.Decode.Decoder Billing.Model.Service
 decodeService =
   Json.Decode.object5 Billing.Model.Service
@@ -111,14 +109,35 @@ decodeService =
     (decodeServiceValue)
 
 
-decodePacket : Json.Decode.Decoder Billing.Model.Packet
-decodePacket =
-  Json.Decode.map Billing.Model.Packet
-    ("id" := Json.Decode.int)
-    &= ("name" := Json.Decode.string)
-    &= ("type" := decodePacketType)
-    &= ("project" := decodeProject)
-    &= ("client_type" := decodeClient)
-    &= ("region" := decodeRegion)
-    &= ("period" := decodePeriod)
-    &= ("services" := Json.Decode.list decodeService)
+decodeServiceUnit : Json.Decode.Decoder Billing.Model.ServiceUnit
+decodeServiceUnit =
+  Json.Decode.string `Json.Decode.andThen` \unit ->
+    case unit of
+      "meter" -> Json.Decode.succeed Billing.Model.Meter
+      _ -> Json.Decode.succeed Billing.Model.NoUnit
+
+
+decodeServiceValue : Json.Decode.Decoder Billing.Model.ServiceValue
+decodeServiceValue =
+  let
+    serviceInt =
+      Json.Decode.object3
+        (\min max default -> Billing.Model.ServiceInt { min = min, max = max, default = default })
+        ("min" := Json.Decode.int)
+        ("max" := Json.Decode.int)
+        ("defaultValue" := Json.Decode.int)
+
+    serviceListInt =
+      Json.Decode.object2
+        (\list def -> Billing.Model.ServiceListInt {values = list, default = def })
+        ("values" := Json.Decode.list Json.Decode.int)
+        ("defaultValue" := Json.Decode.int)
+
+    serviceBool =
+      Json.Decode.succeed <| Billing.Model.ServiceBool <| {default = True}
+  in
+    Json.Decode.oneOf
+      [ serviceInt
+      , serviceListInt
+      , serviceBool
+      ]

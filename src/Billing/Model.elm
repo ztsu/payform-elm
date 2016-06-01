@@ -38,7 +38,6 @@ type ClientType
   | Wallet
 
 
-
 type alias Region =
   { id: Int
   , name: String
@@ -77,4 +76,5 @@ type ServiceUnit
 
 type ServiceValue
   = ServiceInt { min : Int, max : Int, default : Int }
-  | ServiceList { values : List Int, default : Int }
+  | ServiceListInt { values : List Int, default : Int }
+  | ServiceBool { default : Bool }
